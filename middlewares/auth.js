@@ -12,7 +12,7 @@ const getToken=(req)=>{
 
 }
 const auth = expressjwt({
-    secreta,
+    secret: secreta,
     algorithms:['HS256'],
     userProperty:'user',
     getToken

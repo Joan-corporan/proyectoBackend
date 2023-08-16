@@ -6,7 +6,7 @@ const { findOne } = require("../models/User.model");
 const User = mongoose.model("User");
 
 const signup = async (req, res) => {
-  const { username, email, password, address } = req.body;
+  const { username, email, password, address, lastname } = req.body;
   const emailLowerCase = email.toLowerCase();
   const regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   if (!regexPassword.test(password)) {
@@ -19,6 +19,7 @@ const signup = async (req, res) => {
   try {
     const user = new User({
       username,
+      lastname,
       email: emailLowerCase,
       password: cryptoPassword,
       address,
@@ -134,6 +135,7 @@ const getUserById =(req,res)=>{
         if(user){
             return res.status(200).json({
                 mensaje:'ok',
+                userId:userValidated,
                 detail: user
 
             })
@@ -149,6 +151,95 @@ const getUserById =(req,res)=>{
         })
     }
 }
+const deleteUserById=async(req,res)=>{
+
+    const{_id}=req.params
+
+    try {
+
+        const resp=await User.findByIdAndDelete(_id)
+
+        if(resp){            
+
+            return res.status(200).json({
+
+            messege:"ok",
+
+            detail:resp,
+
+        })
+
+        }
+
+        return res.status(404).json({
+
+            message:'Not found'
+
+        })
+
+       
+
+    } catch (error) {
+
+        return res.status(500).json({
+
+            message:'Server Error',
+
+            error
+
+        })
+
+    }  
+
+}
+
+const updateUserById=async(req,res)=>{
+
+    const{_id}=req.params
+
+    const{userUpdated}=req.body
+
+    const{password}=userUpdated
+
+    const hashedPassword=hashPassword(password)
+
+    try {
+
+        const resp=await User.findByIdAndUpdate(_id,{...userUpdated,password:hashedPassword}, {new:true})
+
+        if(resp){            
+
+            return res.status(200).json({
+
+            messege:"ok",
+
+            detail:resp,
+
+        })
+
+        }
+
+        return res.status(404).json({
+
+            message:'Not found'
+
+        })
+
+       
+
+    } catch (error) {
+
+        return res.status(500).json({
+
+            message:'Server Error',
+
+            error
+
+        })
+
+    }  
+
+}
 /* Crear las rutas */
 
 /* exprotando las funciones: */
@@ -158,5 +249,7 @@ module.exports = {
   updateUsers,
   deleteUsers,
   login,
-  getUserById
+  getUserById,
+  deleteUserById,
+  updateUserById
 };

@@ -11,6 +11,16 @@ const UserSchema = new mongoose.Schema({
             }
         }
     },
+    lastname: {
+        type: String,
+        required: true,
+        validate: {
+            validator: function(v){
+                return /^[a-zA-Z0-9 ]{3,30}$/.test(v)
+            }
+        }
+
+    },
     password:{
         type: String,
         required: true
@@ -26,10 +36,7 @@ const UserSchema = new mongoose.Schema({
             }
         }
     },
-    address:{
-        type: String,
-        required: true
-    },
+  
 
 
 },{

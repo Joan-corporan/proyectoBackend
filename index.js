@@ -24,7 +24,7 @@ const corsOptions={
 }) */
 
 /* Creando el middleware */
-app.use(cors)(corsOptions)
+app.use(cors())
 /* Habilita e */
 app.use(express.json())
 /* lo que va hacer esto es que si va */
@@ -51,7 +51,7 @@ app.post('/',(req,res)=>{
     res.status(200).json({
 
         mensaje: 'ruta post', 
-        detail: joan
+        detail: 'joan'
     })
 })
 app.delete('/',(req, res)=>{
