@@ -11,7 +11,8 @@ router.post('/',signup)
 router.put('/',updateUsers)
 router.delete('/',deleteUsers)
 router.post('/login',login)  
-router.get('/:id',auth,getUserById)
+router.get('/perfil/:_id',auth,getUserById)
+
 router.put('/',updateUserById)
 router.delete('/',deleteUserById)
 

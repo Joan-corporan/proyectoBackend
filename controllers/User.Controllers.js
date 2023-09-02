@@ -25,7 +25,7 @@ const signup = async (req, res) => {
       address,
     });
     const response = await user.save();
-    console.log(response);
+    /* console.log(response); */
     const token = generateToken(response);
 
     return res.status(201).json({
@@ -90,7 +90,7 @@ const deleteUsers = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-
+  console.log(email, password);
   const emailLowerCase = email.toLowerCase();
 
   const passwordHash = hashPassword(password);
@@ -104,10 +104,10 @@ const login = async (req, res) => {
       });
     }
 
-    console.log(`${userValidated.password} vs ${passwordHash}`);
+    /*  console.log(`${userValidated.password} vs ${passwordHash}`); */
 
     if (userValidated.password === passwordHash) {
-      console.log(`coinciden`);
+      /* console.log(`coinciden`); */
 
       const token = generateToken(userValidated);
 
@@ -128,119 +128,89 @@ const login = async (req, res) => {
   }
 };
 
-const getUserById =(req,res)=>{
-    const {_id}=req.params
-    try {
-        const user = User.findOne({_id})
-        if(user){
-            return res.status(200).json({
-                mensaje:'ok',
-                userId:userValidated,
-                detail: user
-
-            })
-        }
-        return res.status(404).json({
-            mesaje:'not found'
-        })
-        
-    } catch (error) {
-        return res.status(500).json({
-            mensje: 'Server Error',
-            error
-        })
+const getUserById = (req, res) => {
+  const { _id } = req.params;
+  try {
+    const user = User.findById(_id);
+    if (user) {
+      return res.status(200).json({
+        mensaje: "ok",
+        /* userId:userValidated, */
+        detail: user,
+      });
     }
-}
-const deleteUserById=async(req,res)=>{
+    return res.status(404).json({
+      mesaje: "not found",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      mensje: "Server Error",
+      error,
+    });
+  }
+};
+const deleteUserById = async (req, res) => {
+  const { _id } = req.params;
 
-    const{_id}=req.params
+  try {
+    const resp = await User.findByIdAndDelete(_id);
 
-    try {
+    if (resp) {
+      return res.status(200).json({
+        messege: "ok",
 
-        const resp=await User.findByIdAndDelete(_id)
+        detail: resp,
+      });
+    }
 
-        if(resp){            
+    return res.status(404).json({
+      message: "Not found",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server Error",
 
-            return res.status(200).json({
+      error,
+    });
+  }
+};
 
-            messege:"ok",
+const updateUserById = async (req, res) => {
+  const { _id } = req.params;
 
-            detail:resp,
+  const { userUpdated } = req.body;
 
-        })
+  const { password } = userUpdated;
 
-        }
+  const hashedPassword = hashPassword(password);
 
-        return res.status(404).json({
+  try {
+    const resp = await User.findByIdAndUpdate(
+      _id,
+      { ...userUpdated, password: hashedPassword },
+      { new: true }
+    );
 
-            message:'Not found'
+    if (resp) {
+      return res.status(200).json({
+        messege: "ok",
 
-        })
+        detail: resp,
+      });
+    }
 
-       
+    return res.status(404).json({
+      message: "Not found",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server Error",
 
-    } catch (error) {
+      error,
+    });
+  }
+};
 
-        return res.status(500).json({
-
-            message:'Server Error',
-
-            error
-
-        })
-
-    }  
-
-}
-
-const updateUserById=async(req,res)=>{
-
-    const{_id}=req.params
-
-    const{userUpdated}=req.body
-
-    const{password}=userUpdated
-
-    const hashedPassword=hashPassword(password)
-
-    try {
-
-        const resp=await User.findByIdAndUpdate(_id,{...userUpdated,password:hashedPassword}, {new:true})
-
-        if(resp){            
-
-            return res.status(200).json({
-
-            messege:"ok",
-
-            detail:resp,
-
-        })
-
-        }
-
-        return res.status(404).json({
-
-            message:'Not found'
-
-        })
-
-       
-
-    } catch (error) {
-
-        return res.status(500).json({
-
-            message:'Server Error',
-
-            error
-
-        })
-
-    }  
-
-}
-/* Crear las rutas */
 
 /* exprotando las funciones: */
 module.exports = {
@@ -251,5 +221,5 @@ module.exports = {
   login,
   getUserById,
   deleteUserById,
-  updateUserById
+  updateUserById,
 };

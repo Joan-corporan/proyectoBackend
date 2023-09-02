@@ -2,6 +2,8 @@ require ('dotenv').config()
 require('./models/User.model')
 const cors = require('cors')
 const userRoutes = require('./routes/User.routes')
+const paymentRoutes = require('./routes/Payment.routes')
+const productRoutes = require('./routes/Produc.routes')
 /* PAQUETE DE MONGOOSE */
 const mongoose = require('mongoose')
 /* CONECTANDO MONGOOSE Y ACCEDIENDO A LA VARIABLE DE ENTORNO  */
@@ -17,18 +19,21 @@ const corsOptions={
     optionsSuccessStatus:200
 }
 
-/* CREAMOS UN MODELO */
-/* const User = mongoose.model('User',{
-    username: String,
-    password : String,
-}) */
+
 
 /* Creando el middleware */
 app.use(cors())
-/* Habilita e */
+/* */
 app.use(express.json())
-/* lo que va hacer esto es que si va */
+/*  */
 app.use('/users', userRoutes)
+/* Rutas que va a estar escuchando es la de payments */
+app.use('/payment',paymentRoutes )
+
+app.use('/products',productRoutes)
+
+
+
 
 app.get('/',(req, res)=>{
     res.status(200).json({
@@ -43,11 +48,7 @@ app.put('/',(req,res)=>{
     })
 })
 app.post('/',(req,res)=>{
-  /*   const joan = new User({
-        username:'joan',
-        password:'joan'
-    })
-    joan.save() */
+ 
     res.status(200).json({
 
         mensaje: 'ruta post', 
